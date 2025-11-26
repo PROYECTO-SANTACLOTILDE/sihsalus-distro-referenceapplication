@@ -7,148 +7,490 @@
 	},
 	"item": [
 		{
-			"name": "Login",
-			"event": [
+			"name": "Auth",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status 200\", function () {\r",
-							"  pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const json = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Autenticado\", function () {\r",
-							"  pm.expect(json.authenticated).to.be.true;\r",
-							"});\r",
-							"\r",
-							"// Guarda el UUID de sesión por si quieres usarlo luego\r",
-							"if (json.sessionId) {\r",
-							"  pm.environment.set(\"sessionId\", json.sessionId);\r",
-							"}\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+					"name": "Login",
+					"event": [
 						{
-							"key": "password",
-							"value": "{{password}}",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "{{username}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Autenticado\", function () {\r",
+									"  pm.expect(json.authenticated).to.be.true;\r",
+									"});\r",
+									"\r",
+									"// Guarda el UUID de sesión por si quieres usarlo luego\r",
+									"if (json.sessionId) {\r",
+									"  pm.environment.set(\"sessionId\", json.sessionId);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/ws/rest/v1/session",
-					"host": [
-						"{{baseUrl}}"
 					],
-					"path": [
-						"ws",
-						"rest",
-						"v1",
-						"session"
-					]
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"session"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Buscar paciente",
-			"event": [
+			"name": "Queue",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status 200\", function () {\r",
-							"  pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const json = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Devuelve campo results\", function () {\r",
-							"  pm.expect(json).to.have.property(\"results\");\r",
-							"  pm.expect(json.results).to.be.an(\"array\");\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
+					"name": "0.1 - Bootstrap location",
+					"event": [
 						{
-							"key": "password",
-							"value": "{{password}}",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "{{username}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Hay al menos un location\", function () {\r",
+									"  pm.expect(json.results).to.be.an(\"array\");\r",
+									"  pm.expect(json.results.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"// Tomamos el primer location de la lista\r",
+									"const locationUuid = json.results[0].uuid;\r",
+									"pm.environment.set(\"queueLocationUuid\", locationUuid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					]
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/location?q=Outpatient",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"location"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "Outpatient"
+								}
+							]
+						}
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/ws/rest/v1/patient?q=Fernando",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"ws",
-						"rest",
-						"v1",
-						"patient"
-					],
-					"query": [
+				{
+					"name": "0.2 - Bootstrap service concept",
+					"event": [
 						{
-							"key": "q",
-							"value": "Fernando"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Hay al menos un concepto para el servicio de cola\", function () {\r",
+									"  pm.expect(json.results).to.be.an(\"array\");\r",
+									"  pm.expect(json.results.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"// Tomamos el primer concepto\r",
+									"const conceptUuid = json.results[0].uuid;\r",
+									"pm.environment.set(\"queueServiceUuid\", conceptUuid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					]
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/concept?q=triage",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"concept"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "triage"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1 - Create Queue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 201 o 200\", function () {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Tiene uuid\", function () {\r",
+									"  pm.expect(json).to.have.property(\"uuid\");\r",
+									"});\r",
+									"\r",
+									"// Guardar uuid para las siguientes requests\r",
+									"pm.environment.set(\"queueUuid\", json.uuid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"API Test Queue {{$randomInt}}\",\r\n  \"description\": \"Queue creada desde Postman\",\r\n  \"service\": {\r\n    \"uuid\": \"{{queueServiceUuid}}\"\r\n  },\r\n  \"location\": {\r\n    \"uuid\": \"{{queueLocationUuid}}\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/queue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2 - Get queue by uuid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Misma uuid que la creada\", function () {\r",
+									"  pm.expect(json.uuid).to.eql(pm.environment.get(\"queueUuid\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Tiene nombre\", function () {\r",
+									"  pm.expect(json).to.have.property(\"name\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/queue/{{queueUuid}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"queue",
+								"{{queueUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3 - Update queue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Descripción actualizada\", function () {\r",
+									"  pm.expect(json.description).to.eql(\"Descripción actualizada vía API\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"Descripción actualizada vía API\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/queue/{{queueUuid}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"queue",
+								"{{queueUuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4 – List queues",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const json = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Tiene campo results\", function () {\r",
+									"  pm.expect(json).to.have.property(\"results\");\r",
+									"  pm.expect(json.results).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Incluye la queue creada\", function () {\r",
+									"  const uuid = pm.environment.get(\"queueUuid\");\r",
+									"  const found = json.results.some(item => item.uuid === uuid);\r",
+									"  pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/queue?q=API Test Queue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"queue"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "API Test Queue"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5 - Delete queue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status 204 o 200\", function () {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ws/rest/v1/queue/{{queueUuid}}?purge=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ws",
+								"rest",
+								"v1",
+								"queue",
+								"{{queueUuid}}"
+							],
+							"query": [
+								{
+									"key": "purge",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
 				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
 			},
-			"response": []
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

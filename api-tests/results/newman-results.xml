@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="sihsalus-api" tests="2" time="0.332">
-  <testsuite name="Login" id="162c8c7f-f743-4525-ae32-81f1ebfaa6b3" timestamp="2025-11-16T23:45:20.600Z" tests="2" failures="0" errors="0" time="0.201">
-    <testcase name="Status 200" time="0.201" classname="Login"/>
-    <testcase name="Autenticado" time="0.201" classname="Login"/>
+<testsuites name="sihsalus-api" tests="8" time="0.535">
+  <testsuite name="Auth / Login" id="437f0f44-f788-4cb5-880f-e1614bf6f868" timestamp="2025-11-26T07:03:26.240Z" tests="2" failures="0" errors="0" time="0.116">
+    <testcase name="Status 200" time="0.116" classname="AuthLogin"/>
+    <testcase name="Autenticado" time="0.116" classname="AuthLogin"/>
   </testsuite>
-  <testsuite name="Buscar paciente" id="eb281b05-c833-4a40-965f-0ae8664c1b76" timestamp="2025-11-16T23:45:20.600Z" tests="2" failures="0" errors="0" time="0.131">
-    <testcase name="Status 200" time="0.131" classname="BuscarPaciente"/>
-    <testcase name="Devuelve campo results" time="0.131" classname="BuscarPaciente"/>
+  <testsuite name="Queue / 0.1 - Bootstrap location" id="cbe5b398-2f71-463b-af6d-f712d75ed680" timestamp="2025-11-26T07:03:26.240Z" tests="2" failures="0" errors="0" time="0.025">
+    <testcase name="Status 200" time="0.025" classname="Queue01BootstrapLocation"/>
+    <testcase name="Hay al menos un location" time="0.025" classname="Queue01BootstrapLocation"/>
+  </testsuite>
+  <testsuite name="Queue / 0.2 - Bootstrap service concept" id="5a278d96-4b3b-43f4-8b83-32abad01a122" timestamp="2025-11-26T07:03:26.240Z" tests="2" failures="0" errors="0" time="0.162">
+    <testcase name="Status 200" time="0.162" classname="Queue02BootstrapServiceConcept"/>
+    <testcase name="Hay al menos un concepto para el servicio de cola" time="0.162" classname="Queue02BootstrapServiceConcept"/>
+  </testsuite>
+  <testsuite name="Queue / 1 - Create Queue" id="48f7f37d-d743-46ba-84ca-ebefb89ae09e" timestamp="2025-11-26T07:03:26.240Z" tests="2" failures="0" errors="0" time="0.068">
+    <testcase name="Status 201 o 200" time="0.068" classname="Queue1CreateQueue"/>
+    <testcase name="Tiene uuid" time="0.068" classname="Queue1CreateQueue"/>
+  </testsuite>
+  <testsuite name="Queue / 2 - Get queue by uuid" id="49102be2-e287-44b7-bb9a-0d8af2306562" timestamp="2025-11-26T07:03:26.240Z" tests="3" failures="0" errors="0" time="0.046">
+    <testcase name="Status 200" time="0.046" classname="Queue2GetQueueByUuid"/>
+    <testcase name="Misma uuid que la creada" time="0.046" classname="Queue2GetQueueByUuid"/>
+    <testcase name="Tiene nombre" time="0.046" classname="Queue2GetQueueByUuid"/>
+  </testsuite>
+  <testsuite name="Queue / 3 - Update queue" id="f4d5e930-45c8-485a-8cab-a56c2602840c" timestamp="2025-11-26T07:03:26.240Z" tests="2" failures="0" errors="0" time="0.075">
+    <testcase name="Status 200" time="0.075" classname="Queue3UpdateQueue"/>
+    <testcase name="Descripción actualizada" time="0.075" classname="Queue3UpdateQueue"/>
+  </testsuite>
+  <testsuite name="Queue / 4 – List queues" id="ce52bf59-019a-4b3e-b3d8-c07c48438716" timestamp="2025-11-26T07:03:26.240Z" tests="3" failures="0" errors="0" time="0.025">
+    <testcase name="Status 200" time="0.025" classname="Queue4ListQueues"/>
+    <testcase name="Tiene campo results" time="0.025" classname="Queue4ListQueues"/>
+    <testcase name="Incluye la queue creada" time="0.025" classname="Queue4ListQueues"/>
+  </testsuite>
+  <testsuite name="Queue / 5 - Delete queue" id="e57de69d-9db3-4e2f-9049-da6b3d777f94" timestamp="2025-11-26T07:03:26.240Z" tests="1" failures="0" errors="0" time="0.018">
+    <testcase name="Status 204 o 200" time="0.018" classname="Queue5DeleteQueue"/>
   </testsuite>
 </testsuites>

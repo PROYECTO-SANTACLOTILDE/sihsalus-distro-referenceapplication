@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 1) Crear un .env mínimo para que docker-compose tenga credenciales
+      # 1) .env mínimo para docker-compose
       - name: Create .env for docker-compose
         run: |
           cat > .env <<EOF
@@ -26,29 +26,41 @@ jobs:
           TAG=3.2.1
           EOF
 
-      # 2) Levantar el stack de OpenMRS (db + backend + frontend + gateway)
+      # 2) Levantar stack OpenMRS
       - name: Start OpenMRS stack with Docker Compose
         run: |
           docker compose -f docker-compose.yml up -d db backend frontend gateway
           docker compose ps
 
-      # 3) Esperar a que la Legacy UI esté disponible
-      - name: Wait for OpenMRS legacy login
+      # 3) Esperar a que el backend diga "started"
+      - name: Wait for OpenMRS health endpoint
         run: |
-          echo "Waiting for OpenMRS to be ready..."
-          for i in {1..40}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/openmrs/login.htm || echo "000")
+          echo "Waiting for OpenMRS /health/started..."
+          for i in {1..90}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/openmrs/health/started || echo "000")
             echo "Attempt $i - HTTP $STATUS"
-            if [ "$STATUS" = "200" ] || [ "$STATUS" = "302" ]; then
-              echo "OpenMRS is up!"
+            if [ "$STATUS" = "200" ]; then
+              echo "OpenMRS reports 'started'!"
               exit 0
             fi
-            sleep 10
+            sleep 20
           done
-          echo "OpenMRS did not become ready in time"
+          echo "OpenMRS did not report 'started' in time"
+          echo "==== Backend logs ===="
+          docker compose -f docker-compose.yml logs backend || true
           exit 1
 
-      # 4) Preparar Node + Playwright
+      # (Opcional) check rápido de login.htm a través del gateway
+      - name: Sanity check legacy login
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/openmrs/login.htm || echo "000")
+          echo "Legacy login HTTP $STATUS"
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "302" ]; then
+            echo "Legacy login not reachable"
+            exit 1
+          fi
+
+      # 4) Node + Playwright
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -60,15 +72,13 @@ jobs:
           npm install
           npx playwright install --with-deps chromium
 
-      # 5) Ejecutar los tests E2E
+      # 5) Ejecutar E2E
       - name: Run Playwright tests
-        env:
-          BASE_URL: http://localhost/openmrs
         run: |
           cd ui-tests
           npm run test:e2e
 
-      # 6) Subir reporte 
+      # 6) Subir reporte
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
