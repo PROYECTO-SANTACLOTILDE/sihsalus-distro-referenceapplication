@@ -1,0 +1,10 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="8.367218999999999">
+<testsuite name="create-patient-spa.spec.ts" timestamp="2025-11-26T19:44:19.115Z" hostname="" tests="1" failures="0" skipped="0" time="6.98" errors="0">
+<testcase name="Crear paciente en SPA y verificar que se muestra su ficha" classname="create-patient-spa.spec.ts" time="6.98">
+</testcase>
+</testsuite>
+<testsuite name="login-legacy.spec.ts" timestamp="2025-11-26T19:44:19.115Z" hostname="" tests="1" failures="0" skipped="0" time="1.596" errors="0">
+<testcase name="login en Legacy UI y llega al home" classname="login-legacy.spec.ts" time="1.596">
+</testcase>
+</testsuite>
+</testsuites>
