@@ -1,18 +1,18 @@
-<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="37.530460999999995">
-<testsuite name="create-patient-list-spa.spec.ts" timestamp="2025-11-27T10:50:04.319Z" hostname="" tests="1" failures="0" skipped="0" time="7.056" errors="0">
-<testcase name="Crear lista de pacientes &quot;Pacientes offline&quot;" classname="create-patient-list-spa.spec.ts" time="7.056">
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="39.39557799999999">
+<testsuite name="create-patient-list-spa.spec.ts" timestamp="2025-11-27T11:21:02.618Z" hostname="" tests="1" failures="0" skipped="0" time="7.567" errors="0">
+<testcase name="Crear lista de pacientes &quot;Pacientes offline&quot;" classname="create-patient-list-spa.spec.ts" time="7.567">
 </testcase>
 </testsuite>
-<testsuite name="create-patient-spa.spec.ts" timestamp="2025-11-27T10:50:04.319Z" hostname="" tests="1" failures="0" skipped="0" time="5.469" errors="0">
-<testcase name="Crear paciente y verificar ficha" classname="create-patient-spa.spec.ts" time="5.469">
+<testsuite name="create-patient-spa.spec.ts" timestamp="2025-11-27T11:21:02.618Z" hostname="" tests="1" failures="0" skipped="0" time="5.898" errors="0">
+<testcase name="Crear paciente y verificar ficha" classname="create-patient-spa.spec.ts" time="5.898">
 </testcase>
 </testsuite>
-<testsuite name="login-legacy.spec.ts" timestamp="2025-11-27T10:50:04.319Z" hostname="" tests="1" failures="0" skipped="0" time="0.931" errors="0">
-<testcase name="Login en Legacy UI" classname="login-legacy.spec.ts" time="0.931">
+<testsuite name="login-legacy.spec.ts" timestamp="2025-11-27T11:21:02.618Z" hostname="" tests="1" failures="0" skipped="0" time="1.294" errors="0">
+<testcase name="Login en Legacy UI" classname="login-legacy.spec.ts" time="1.294">
 </testcase>
 </testsuite>
-<testsuite name="search-patient-spa.spec.ts" timestamp="2025-11-27T10:50:04.319Z" hostname="" tests="1" failures="0" skipped="0" time="22.772" errors="0">
-<testcase name="Creación y búsqueda de paciente + lista + visita completa" classname="search-patient-spa.spec.ts" time="22.772">
+<testsuite name="search-patient-spa.spec.ts" timestamp="2025-11-27T11:21:02.618Z" hostname="" tests="1" failures="0" skipped="0" time="23.072" errors="0">
+<testcase name="Creación y búsqueda de paciente + lista + visita completa" classname="search-patient-spa.spec.ts" time="23.072">
 </testcase>
 </testsuite>
 </testsuites>

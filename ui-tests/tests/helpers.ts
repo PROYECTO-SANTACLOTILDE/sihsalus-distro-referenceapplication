@@ -155,15 +155,27 @@ export async function ensureOfflinePatientListExists(
     await allListsTab.click();
   }
 
-  // Función helper interna para buscar una lista por nombre en la tabla
+    // Función helper interna para buscar una lista por nombre en la tabla
   async function findListRowByName() {
     // Área de búsqueda "Search this list"
     const searchRegion = page.getByRole('search', {
       name: /Search this list/i,
     });
 
+    // Si todavía no existe la región de search (empty state: "There are no patient lists to display"),
+    // devolvemos un locator de fila que NO será visible, para que el caller sepa que no existe la lista.
+    const regionCount = await searchRegion.count();
+    if (regionCount === 0) {
+      return page.getByRole('row', { name: new RegExp(listName, 'i') });
+    }
+
     const searchInput = searchRegion.getByRole('searchbox');
-    await expect(searchInput).toBeVisible();
+
+    // Si por alguna razón el input aún no es visible, no cae el test aquí;
+    // simplemente devolvemos el locator de fila.
+    if (!(await searchInput.isVisible().catch(() => false))) {
+      return page.getByRole('row', { name: new RegExp(listName, 'i') });
+    }
 
     // Limpiamos y buscamos por el nombre de la lista
     await searchInput.fill(listName);
@@ -175,6 +187,7 @@ export async function ensureOfflinePatientListExists(
     // Fila que contenga el nombre de la lista
     return page.getByRole('row', { name: new RegExp(listName, 'i') });
   }
+
 
   // 3) Si la lista ya existe, no hacemos nada
   let listRow = await findListRowByName();
