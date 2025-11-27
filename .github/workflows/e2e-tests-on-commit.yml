@@ -60,25 +60,48 @@ jobs:
             exit 1
           fi
 
-      # 4) Node + Playwright
+      # 4) Node (compartido por Newman y Playwright)
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
+      # ============================
+      # 5) API TESTS (Newman)
+      # ============================
+      - name: Install Newman
+        run: |
+          npm install -g newman newman-reporter-junitfull
+
+      - name: Run API tests with Newman
+        run: |
+          mkdir -p api-tests/results
+          newman run api-tests/sihsalus-api.postman_collection.json \
+            -e api-tests/environments/dev.postman_environment.json \
+            --reporters cli,junit \
+            --reporter-junit-export api-tests/results/newman-results.xml
+
+      - name: Upload Newman API test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-api-report
+          path: api-tests/results/
+
+      # ============================
+      # 6) UI E2E TESTS (Playwright)
+      # ============================
       - name: Install Playwright deps
         run: |
           cd ui-tests
           npm install
           npx playwright install --with-deps chromium
 
-      # 5) Ejecutar E2E
       - name: Run Playwright tests
         run: |
           cd ui-tests
           npm run test:e2e
 
-      # 6) Subir reporte
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4

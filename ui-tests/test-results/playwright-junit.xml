@@ -1,10 +1,18 @@
-<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="8.367218999999999">
-<testsuite name="create-patient-spa.spec.ts" timestamp="2025-11-26T19:44:19.115Z" hostname="" tests="1" failures="0" skipped="0" time="6.98" errors="0">
-<testcase name="Crear paciente en SPA y verificar que se muestra su ficha" classname="create-patient-spa.spec.ts" time="6.98">
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="28.885098000000003">
+<testsuite name="create-patient-list-spa.spec.ts" timestamp="2025-11-27T09:07:57.500Z" hostname="" tests="1" failures="0" skipped="0" time="9.058" errors="0">
+<testcase name="Crear lista de pacientes &quot;Pacientes offline&quot; en SPA" classname="create-patient-list-spa.spec.ts" time="9.058">
 </testcase>
 </testsuite>
-<testsuite name="login-legacy.spec.ts" timestamp="2025-11-26T19:44:19.115Z" hostname="" tests="1" failures="0" skipped="0" time="1.596" errors="0">
-<testcase name="login en Legacy UI y llega al home" classname="login-legacy.spec.ts" time="1.596">
+<testsuite name="create-patient-spa.spec.ts" timestamp="2025-11-27T09:07:57.500Z" hostname="" tests="1" failures="0" skipped="0" time="9.114" errors="0">
+<testcase name="Crear paciente en SPA y verificar que se muestra su ficha" classname="create-patient-spa.spec.ts" time="9.114">
+</testcase>
+</testsuite>
+<testsuite name="login-legacy.spec.ts" timestamp="2025-11-27T09:07:57.500Z" hostname="" tests="1" failures="0" skipped="0" time="2.357" errors="0">
+<testcase name="Login en Legacy UI" classname="login-legacy.spec.ts" time="2.357">
+</testcase>
+</testsuite>
+<testsuite name="search-patient-spa.spec.ts" timestamp="2025-11-27T09:07:57.500Z" hostname="" tests="1" failures="0" skipped="0" time="27.052" errors="0">
+<testcase name="Crear paciente en SPA, buscarlo, abrir ficha y añadirlo a lista &quot;Pacientes offline&quot;" classname="search-patient-spa.spec.ts" time="27.052">
 </testcase>
 </testsuite>
 </testsuites>
