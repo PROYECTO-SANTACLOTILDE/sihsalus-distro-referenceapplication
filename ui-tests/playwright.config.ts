@@ -8,6 +8,9 @@ export default defineConfig({
     timeout: 10 * 1000,
   },
 
+  workers: 1,
+  fullyParallel: false,
+
   // Reportes y artefactos
   reporter: [
     // Reporter de consola 
