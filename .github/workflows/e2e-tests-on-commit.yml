@@ -1,4 +1,4 @@
-name: E2E Tests (Playwright)
+name: Flujo de Tests on Commit
 
 on:
   push:
@@ -108,3 +108,20 @@ jobs:
         with:
           name: playwright-report
           path: ui-tests/test-results/
+      # ============================
+      # 7) Deploy: git pull en sih-terminology
+      # ============================
+      - name: Deploy to sih-terminology (git pull)
+        if: success()  
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_FC }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions_sihsalus
+          chmod 600 ~/.ssh/github_actions_sihsalus
+
+          echo "Host 200.16.7.169
+            StrictHostKeyChecking no
+          " >> ~/.ssh/config
+
+          ssh -i ~/.ssh/github_actions_sihsalus u.sihsalus@200.16.7.169 "cd ~/tesis-pruebasAut/sihsalus-distro-referenceapplication && git pull origin tesis-pruebasAut"

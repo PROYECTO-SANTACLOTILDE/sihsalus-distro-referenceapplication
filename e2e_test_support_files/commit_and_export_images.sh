@@ -1,7 +1,6 @@
 #obtenido de: https://github.com/openmrs/openmrs-distro-referenceapplication/blob/main/e2e_test_support_files/commit_and_export_images.sh
 #!/bin/bash
 
-#de donde se obtienen los id?
 backend_container_id=$(docker ps --filter "name=backend" --format "{{.ID}}")
 db_container_id=$(docker ps --filter "name=db" --format "{{.ID}}")
 frontend_container_id=$(docker ps --filter "name=frontend" --format "{{.ID}}")
