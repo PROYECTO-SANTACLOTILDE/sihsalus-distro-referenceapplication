@@ -1,0 +1,129 @@
+name: Flujo de Tests on Release
+
+on:
+  pull_request:
+    branches: [ tesis_pruebasaut ]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    # Solo correr si el título del PR empieza con "(release)"
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.pull_request.title, '(release)') }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 1) .env mínimo para docker-compose-prod
+      - name: Create .env for docker-compose-prod
+        run: |
+          cat > .env <<EOF
+          MYSQL_ROOT_PASSWORD=openmrs
+          MYSQL_OPENMRS_PASSWORD=openmrs
+          OMRS_DB_REPL_PASSWORD=openmrs
+          OMRS_DB_BACKUP_PASSWORD=openmrs
+          TAG=3.2.1
+          EOF
+
+      # 2) Levantar stack OpenMRS usando docker-compose-prod.yml
+      - name: Start OpenMRS prod stack with Docker Compose
+        run: |
+          docker compose -f docker-compose-prod.yml up -d db db-replic backend frontend gateway
+          docker compose -f docker-compose-prod.yml ps
+
+      # 3) Esperar a que el backend diga "started"
+      - name: Wait for OpenMRS health endpoint
+        run: |
+          echo "Waiting for OpenMRS /health/started..."
+          for i in {1..300}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/openmrs/health/started || echo "000")
+            echo "Attempt $i - HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "OpenMRS reports 'started'!"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "OpenMRS did not report 'started' in time"
+          echo "==== Backend logs ===="
+          docker compose -f docker-compose-prod.yml logs backend || true
+          exit 1
+
+      # Sanity check rápido de login.htm a través del gateway
+      - name: Sanity check legacy login
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/openmrs/login.htm || echo "000")
+          echo "Legacy login HTTP $STATUS"
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "302" ]; then
+            echo "Legacy login not reachable"
+            exit 1
+          fi
+
+      # 4) Node (compartido por Newman y Playwright)
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # ============================
+      # 5) API TESTS (Newman)
+      # ============================
+      - name: Install Newman
+        run: |
+          npm install -g newman newman-reporter-junitfull
+
+      - name: Run API tests with Newman
+        run: |
+          mkdir -p api-tests/results
+          newman run api-tests/sihsalus-api.postman_collection.json \
+            -e api-tests/environments/dev.postman_environment.json \
+            --reporters cli,junit \
+            --reporter-junit-export api-tests/results/newman-results.xml
+
+      - name: Upload Newman API test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-api-report
+          path: api-tests/results/
+
+      # ============================
+      # 6) UI E2E TESTS (Playwright)
+      # ============================
+      - name: Install Playwright deps
+        run: |
+          cd ui-tests
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: |
+          cd ui-tests
+          npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ui-tests/test-results/
+
+      # ============================
+      # 7) Deploy: git pull en sih-terminology
+      # ============================
+      - name: Deploy to sih-terminology (git pull)
+        if: success()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_FC }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/github_actions_sihsalus
+          chmod 600 ~/.ssh/github_actions_sihsalus
+
+          echo "Host 200.16.7.169
+            StrictHostKeyChecking no
+            UserKnownHostsFile=/dev/null
+          " >> ~/.ssh/config
+
+          ssh -i ~/.ssh/github_actions_sihsalus u.sihsalus@200.16.7.169 "cd ~/tesis-pruebasAut/sihsalus-distro-referenceapplication && git pull origin tesis-pruebasAut"
