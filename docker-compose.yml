@@ -117,7 +117,7 @@ services:
       retries: 3
       start_period: 60s
 
-fua-generator-db:
+  fua-generator-db:
     container_name: peruHCE-fua-generator-db
     image: postgres:17
     ports:
