@@ -1,7 +1,9 @@
 services:
   gateway:
     container_name: peruHCE-gateway
-    image: openmrs/openmrs-reference-application-3-gateway:${TAG:-qa}
+    #image: openmrs/openmrs-reference-application-3-gateway:${TAG:-qa}
+    build:
+      context: ./gateway
     restart: "unless-stopped"
     depends_on:
       - frontend
@@ -108,6 +110,8 @@ services:
       DB_PASSWORD: ${PERUHCE_FUA_GEN_DB_PASSWORD:-fuagenerator}
       DB_NAME: ${PERUHCE_FUA_GEN_DB:-fuagenerator}      
       TOKEN: ${PERUHCE_FUA_GEN_TOKEN:-fuagenerator}
+      DB_HOST: 'fua-generator-db'
+      DB_PORT: '5432'
     depends_on:
       - fua-generator-db
     healthcheck:
