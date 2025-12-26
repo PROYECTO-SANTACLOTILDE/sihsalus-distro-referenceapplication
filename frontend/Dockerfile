@@ -2,7 +2,7 @@
 #--------------------------------------------
 # Dev Stage - Assembles and Builds Frontend
 #--------------------------------------------
-FROM --platform=$BUILDPLATFORM node:22-alpine as dev
+FROM node:22-alpine as dev
 
 ARG APP_SHELL_VERSION=next
 
