@@ -9,7 +9,10 @@ WORKDIR /openmrs_distro
 ARG GHP_USERNAME
 ARG GHP_PASSWORD
 
-ARG MVN_ARGS_SETTINGS="-s /root/.m2/settings.xml -gs /usr/share/maven/ref/settings-docker.xml -U -P distro"
+# Export as environment variables so Maven can use them in settings.xml
+ENV GHP_USERNAME=${GHP_USERNAME}
+ENV GHP_PASSWORD=${GHP_PASSWORD}
+ARG MVN_ARGS_SETTINGS="-s /root/.m2/settings.xml -U -P distro"
 ARG MVN_ARGS="install"
 
 # Copy build files
@@ -18,15 +21,13 @@ COPY pom.xml ./
 COPY distro/pom.xml ./distro/
 
 # Pre-download dependencies (cached layer)
-RUN --mount=type=secret,id=m2settings,target=/usr/share/maven/ref/settings-docker.xml \
-    --mount=type=cache,target=/root/.m2/repository \
+RUN --mount=type=cache,target=/root/.m2/repository \
     mvn $MVN_ARGS_SETTINGS dependency:resolve -B || true
 
 COPY distro ./distro/
 
 # Build the distro, but only deploy from the amd64 build
-RUN --mount=type=secret,id=m2settings,target=/usr/share/maven/ref/settings-docker.xml \
-    --mount=type=cache,target=/root/.m2/repository \
+RUN --mount=type=cache,target=/root/.m2/repository \
     if [[ "$MVN_ARGS" != "deploy" || "$(arch)" = "x86_64" ]]; then \
     mvn $MVN_ARGS_SETTINGS $MVN_ARGS; \
     else \
