@@ -43,7 +43,8 @@
       "@openmrs/esm-system-admin-app": "next",
       "@openmrs/esm-user-onboarding-app": "next",
       "@openmrs/esm-ward-app": "next",
-      "@pucp-gidis-hiisc/esm-dyaku-app": "next"
+      "@pucp-gidis-hiisc/esm-dyaku-app": "next",
+      "@pucp-gidis-hiisc/esm-fua-app": "next"
     },
     "excludedFrontendModules": []
   }
