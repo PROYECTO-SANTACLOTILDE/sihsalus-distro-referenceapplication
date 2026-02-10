@@ -23,10 +23,9 @@ upstream backend {
   server backend:8080 max_fails=0;
 }
 
-# Commented out - enable if fua-generator service is available
-# upstream fua-generator {
-#   server fua-generator:3000 max_fails=3 fail_timeout=10s;
-# }
+# Docker DNS resolver - enables lazy resolution for optional services
+resolver 127.0.0.11 valid=30s ipv6=off;
+resolver_timeout 5s;
 
 # HTTP server - redirect to HTTPS
 server {
@@ -142,7 +141,8 @@ server {
       return 204;
     }
 
-    proxy_pass http://fua-generator/;
+    set $fua_upstream http://fua-generator:3000;
+    proxy_pass $fua_upstream/;
     proxy_redirect http://$host/ /services/fua-generator/;
 
     # Si el upstream falla, devolver 503 con mensaje personalizado
@@ -155,13 +155,14 @@ server {
     return 503 '{"error": "FUA Generator service is temporarily unavailable", "status": 503}';
   }
 
-  # Portainer
+  # Portainer (optional - resolves at runtime)
   location /portainer {
     return 301 /portainer/;
   }
 
   location /portainer/ {
-    proxy_pass http://portainer:9000/;
+    set $portainer_upstream http://portainer:9000;
+    proxy_pass $portainer_upstream/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -172,13 +173,14 @@ server {
     proxy_set_header Connection "upgrade";
   }
 
-  # Pi-hole DNS Admin
+  # Pi-hole DNS Admin (optional - resolves at runtime)
   location /dns {
     return 301 /dns/;
   }
 
   location /dns/ {
-    proxy_pass http://dns:80/admin/;
+    set $dns_upstream http://dns:80;
+    proxy_pass $dns_upstream/admin/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -188,7 +190,8 @@ server {
   }
 
   location /admin/ {
-    proxy_pass http://dns:80/admin/;
+    set $dns_admin_upstream http://dns:80;
+    proxy_pass $dns_admin_upstream/admin/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -198,7 +201,8 @@ server {
   }
 
   location /api/ {
-    proxy_pass http://dns:80/api/;
+    set $dns_api_upstream http://dns:80;
+    proxy_pass $dns_api_upstream/api/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
