@@ -139,9 +139,41 @@ services:
       retries: 5
       start_period: 30s
 
+  hapi-fhir:
+    image: johanamador/hapi-fhir-minsa-peru:latest
+    container_name: peruHCE-hapi-fhir
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hapi-postgres:5432/hapi
+      - SPRING_DATASOURCE_USERNAME=hapi
+      - SPRING_DATASOURCE_PASSWORD=hapi
+    depends_on:
+      - hapi-postgres
+    networks:
+      - peruHCE-net
+  
+  hapi-postgres:
+    image: postgres:15
+    container_name: peruHCE-hapi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hapi
+      POSTGRES_USER: hapi
+      POSTGRES_PASSWORD: hapi
+    volumes:
+      - hapi_pgdata:/var/lib/postgresql/data
+    networks:
+      - peruHCE-net
 volumes:
   openmrs-data: ~
   db-data: ~
   db-backup: ~
   gateway-data: ~
   db-fua-generator: ~
+  hapi_pgdata: ~
+
+networks:
+  peruHCE-net:
+    driver: bridge
