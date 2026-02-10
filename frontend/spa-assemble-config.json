@@ -45,7 +45,8 @@
       "@openmrs/esm-ward-app": "next",
       "@pucp-gidis-hiisc/esm-dyaku-app": "latest",
       "@pucp-gidis-hiisc/esm-fua-app": "latest",
-      "@pucp-gidis-hiisc/esm-maternal-and-child-health-app": "latest"
+      "@pucp-gidis-hiisc/esm-maternal-and-child-health-app": "latest",
+      "@pucp-gidis-hiisc/esm-sihsalus-consulta-externa-app": "latest"
     },
     "excludedFrontendModules": []
   }
