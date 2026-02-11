@@ -172,8 +172,8 @@ CN = ${CERT_WEB_DOMAIN_COMMON_NAME}
 
 [v3_ca]
 subjectAltName = @alternate_names
-basicConstraints = CA:FALSE
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+basicConstraints = critical, CA:TRUE
+keyUsage = critical, digitalSignature, keyCertSign, keyEncipherment
 extendedKeyUsage = serverAuth
 
 [alternate_names]
