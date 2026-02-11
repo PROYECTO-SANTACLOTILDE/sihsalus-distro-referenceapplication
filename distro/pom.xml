@@ -56,7 +56,7 @@
     <bedmanagement.version>7.1.0</bedmanagement.version>
     <!-- Stock Management and Billing -->
     <stockmanagement.version>3.0.0-SNAPSHOT</stockmanagement.version>
-    <billing.version>1.3.2</billing.version>
+    <billing.version>2.0.0-SNAPSHOT</billing.version>
     <fua.version>1.0.47</fua.version>
     <sihsalus-interop.version>1.0.1</sihsalus-interop.version>
     <!-- <imaging.version>1.1.5-SNAPSHOT</imaging.version> -->
@@ -71,7 +71,7 @@
     <!-- <vaccination-schedule.version>1.0.9</vaccination-schedule.version> -->
 
     <!-- Content Packages -->
-    <sihsalus-content.version>1.2.0</sihsalus-content.version>
+    <sihsalus-content.version>1.6.0</sihsalus-content.version>
   </properties>
 
   <dependencies>
