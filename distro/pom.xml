@@ -71,7 +71,7 @@
     <!-- <vaccination-schedule.version>1.0.9</vaccination-schedule.version> -->
 
     <!-- Content Packages -->
-    <sihsalus-content.version>1.7.1</sihsalus-content.version>
+    <sihsalus-content.version>1.7.2</sihsalus-content.version>
   </properties>
 
   <dependencies>
