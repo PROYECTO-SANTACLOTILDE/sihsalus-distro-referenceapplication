@@ -12,6 +12,19 @@
 
 peruHCE incluye soporte completo para SSL/HTTPS con certificados auto-firmados optimizados para redes hospitalarias internas.
 
+### Inicio Rápido sin SSL (Recomendado para desarrollo)
+
+```bash
+# Iniciar con SSL habilitado
+docker compose -f up -d
+
+# Acceder vía HTTPS
+https://localhost
+
+Consulta el archivo `template.env` para ver solo variables no sensibles.
+
+ ```
+
 ### Inicio Rápido con SSL
 
 ```bash
@@ -22,9 +35,7 @@ docker compose -f docker-compose.yml -f docker-compose.ssl.yml up -d
 https://localhost
 
 Consulta el archivo `template.env` para ver solo variables no sensibles.
-## Uso de credenciales seguras con Docker secrets
 
-Para descargar dependencias privadas desde GitHub Packages durante el build de la imagen backend, este proyecto utiliza Docker secrets en lugar de variables de entorno. Esto mejora la seguridad y evita exponer credenciales sensibles.
 
 ### ¿Cómo crear y usar los secrets?
 
