@@ -2,66 +2,73 @@
 
 ## Tabla de Contenidos
 
+- [Inicio Rápido](#inicio-rápido)
 - [Configuración SSL/HTTPS](#configuración-sslhttps)
-- [Autenticación OIDC/Keycloak](#autenticación-oidckeycloak-en-el-frontend-spa)
-- [Gestión de Credenciales](#gestión-de-credenciales-y-docker-secrets)
+- [Credenciales de GitHub Packages](#credenciales-de-github-packages)
+- [Políticas de Seguridad](#políticas-de-seguridad-cifrado-de-backups-y-retención-de-logs)
 
 ---
+
+## Inicio Rápido
+
+### Sin SSL (Recomendado para desarrollo)
+
+```bash
+# Construir las imágenes
+docker compose build
+
+# Iniciar los servicios
+docker compose up -d
+
+# Acceder vía HTTP
+# http://localhost/openmrs/spa
+```
+
+### Con SSL
+
+```bash
+# Construir las imágenes (incluye certbot)
+docker compose -f docker-compose.yml -f docker-compose.ssl.yml build
+
+# Iniciar los servicios con SSL
+docker compose -f docker-compose.yml -f docker-compose.ssl.yml up -d
+
+# Acceder vía HTTPS
+# https://localhost/openmrs/spa
+```
 
 ## Configuración SSL/HTTPS
 
 peruHCE incluye soporte completo para SSL/HTTPS con certificados auto-firmados optimizados para redes hospitalarias internas.
 
-### Inicio Rápido sin SSL (Recomendado para desarrollo)
+Las variables de SSL se configuran en el archivo `.env`:
 
-```bash
-# Iniciar con SSL habilitado
-docker compose -f up -d
+| Variable | Descripción | Default |
+|----------|-------------|---------|
+| `SSL_MODE` | `dev` (generación única) o `prod` (renovación automática) | `dev` |
+| `CERT_WEB_DOMAINS` | Dominios del certificado (separados por coma) | `localhost,127.0.0.1` |
+| `CERT_WEB_DOMAIN_COMMON_NAME` | Common Name del certificado | `sihsalus.hsc` |
 
-# Acceder vía HTTPS
-https://localhost
+## Credenciales de GitHub Packages
 
-Consulta el archivo `template.env` para ver solo variables no sensibles.
+El backend necesita credenciales de GitHub para descargar módulos privados desde GitHub Packages durante el build.
 
- ```
+Las credenciales se configuran en el archivo `.env`:
 
-### Inicio Rápido con SSL
+```env
+GHP_USERNAME=<tu_usuario_github>
+GHP_PASSWORD=<tu_token_github_con_read:packages>
+```
 
-```bash
-# Iniciar con SSL habilitado
-docker compose -f docker-compose.yml -f docker-compose.ssl.yml up -d
+Estas se pasan como **build args** al Dockerfile, que las exporta como variables de entorno para que Maven las use en `credentials/settings.xml.template` (`${env.GHP_USERNAME}`, `${env.GHP_PASSWORD}`).
 
-# Acceder vía HTTPS
-https://localhost
-
-Consulta el archivo `template.env` para ver solo variables no sensibles.
-
-
-### ¿Cómo crear y usar los secrets?
-
-1. Crea los secrets antes de construir la imagen:
-  ```bash
-  echo "<tu_usuario_github>" | docker secret create GHP_USERNAME -
-  echo "<tu_token_github>" | docker secret create GHP_PASSWORD -
-  ```
-
-2. Al construir la imagen, Docker los montará automáticamente y el build los usará para autenticarse en Maven.
-
-3. Ya no es necesario definir las variables de entorno `GHP_USERNAME` ni `GHP_PASSWORD` en el sistema ni en archivos `.env`.
-
-4. El archivo `credentials/settings.xml.template` está preparado para tomar las credenciales desde el entorno exportado por el build.
-
-**Importante:** Si cambias tus credenciales, elimina y vuelve a crear los secrets.
-
-Para más información sobre Docker secrets: https://docs.docker.com/engine/swarm/secrets/
+> **Nota:** Este proyecto NO usa Docker secrets. Las credenciales se manejan mediante variables de entorno en el archivo `.env`.
 
 ## Políticas de Seguridad: Cifrado de Backups y Retención de Logs
 
 Este proyecto implementa:
-- **Cifrado automático de backups**: Todos los archivos de respaldo generados por los scripts se cifran con AES-256 usando openssl. La clave se provee vía la variable de entorno `BACKUP_ENCRYPTION_PASSWORD` (recomendado: Docker secrets). El backup sin cifrar se elimina tras el cifrado exitoso.
+- **Cifrado automático de backups**: Los archivos de respaldo se cifran con AES-256 usando openssl. La clave se provee vía la variable de entorno `BACKUP_ENCRYPTION_PASSWORD`. El backup sin cifrar se elimina tras el cifrado exitoso.
 - **Rotación y retención de logs**: Los scripts de backup mantienen solo los últimos 5 archivos de log, eliminando los más antiguos automáticamente.
-
-Estas medidas contribuyen al cumplimiento de HIPAA y mejores prácticas de seguridad.
 
 # OpenMRS 3.0 Reference Application
 
