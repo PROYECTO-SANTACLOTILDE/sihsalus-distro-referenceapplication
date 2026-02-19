@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-### Dev Stage 
+### Dev Stage
 #FROM openmrs/openmrs-core:${TAG_CORE:-2.7.3-dev} AS dev
 FROM openmrs/openmrs-core:2.8.x-dev-amazoncorretto-21 AS dev
 WORKDIR /openmrs_distro

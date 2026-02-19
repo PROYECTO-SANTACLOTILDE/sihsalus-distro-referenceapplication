@@ -224,4 +224,3 @@ server {
     return 301 /openmrs/spa/home;
   }
 }
-

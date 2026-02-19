@@ -5,9 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch: 
+  workflow_dispatch:
 
-jobs:  
+jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 40
@@ -29,14 +29,14 @@ jobs:
           name: e2e_release_env_images
           path: e2e_release_env_images.tar.gz
           retention-days: 1
-          
-      - name: 📝 Capture Server Logs
+
+      - name: Capture Server Logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
         with:
           dest: "./logs"
 
-      - name: 📤 Upload Logs as Artifact
+      - name: Upload Logs as Artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -52,14 +52,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        repo: 
+        repo:
           - openmrs-esm-patient-management
           - openmrs-esm-patient-chart
           - openmrs-esm-form-builder
           - openmrs-esm-core
           - openmrs-esm-dispensing-app
           - openmrs-esm-billing-app
-  
+
     steps:
       - uses: actions/checkout@v4
 
@@ -118,13 +118,13 @@ jobs:
           path: e2e_repo/playwright-report/
           retention-days: 30
 
-      - name: 📝 Capture Server Logs
+      - name: Capture Server Logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
         with:
           dest: "./logs"
 
-      - name: 📤 Upload Logs as Artifact
+      - name: Upload Logs as Artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:

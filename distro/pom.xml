@@ -93,46 +93,6 @@
       <version>${sihsalus-interop.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- Custom Module: Vaccination Schedule 
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>vaccination-schedule-omod</artifactId>
-      <version>${vaccination-schedule.version}</version>
-    </dependency>
-    -->
-
-    <!-- Custom Module: Imaging
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>imaging-omod</artifactId>
-      <version>${imaging.version}</version>
-    </dependency>
-    -->
-
-    <!-- UI Framework Modules (required by imaging) - COMMENTED OUT: Not needed for O3, causing
-    dependency conflicts -->
-    <!--
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>appui-omod</artifactId>
-      <version>${appui.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>appframework-omod</artifactId>
-      <version>${appframework.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>uiframework-omod</artifactId>
-      <version>${uiframework.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>uicommons-omod</artifactId>
-      <version>${uicommons.version}</version>
-    </dependency>
-    -->
 
     <!-- Module dependencies -->
     <dependency>
@@ -303,54 +263,6 @@
       <version>${billing.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>imaging-omod</artifactId>
-      <version>${imaging.version}</version>
-      <scope>provided</scope>
-    </dependency>-->
-    <!--
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>appui-omod</artifactId>
-      <version>${appui.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>appframework-omod</artifactId>
-      <version>${appframework.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>uiframework-omod</artifactId>
-      <version>${uiframework.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>uicommons-omod</artifactId>
-      <version>${uicommons.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
-    <!--
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>datafilter-omod</artifactId>
-      <version>${datafilter.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
-    <!--
-    <dependency>
-      <groupId>org.openmrs.module</groupId>
-      <artifactId>oauth2login-omod</artifactId>
-      <version>${oauth2login.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
 
   </dependencies>
 

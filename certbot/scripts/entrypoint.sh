@@ -194,8 +194,8 @@ openssl req -x509 -nodes -newkey "rsa:${CERT_RSA_KEY_SIZE}" -days "${CERT_TEMP_C
 chmod 600 "${CERT_ROOT_PATH}/live/${CERT_WEB_DOMAIN_COMMON_NAME}/privkey.pem"
 chmod 644 "${CERT_ROOT_PATH}/live/${CERT_WEB_DOMAIN_COMMON_NAME}/fullchain.pem"
 
-log_info "✓ Self-signed certificates created successfully!"
-log_info "✓ Certificate fingerprint:"
+log_info "Self-signed certificates created successfully!"
+log_info "Certificate fingerprint:"
 openssl x509 -noout -fingerprint -sha256 -in "${CERT_ROOT_PATH}/live/${CERT_WEB_DOMAIN_COMMON_NAME}/fullchain.pem"
 
 log_info ""
