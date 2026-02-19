@@ -6,7 +6,27 @@ mkdir -p /etc/nginx/templates
 
 # Determine which nginx config to use based on SSL environment variable
 if [ -n "${CERT_WEB_DOMAIN_COMMON_NAME}" ]; then
-    echo "SSL enabled: Using SSL nginx configuration"
+    echo "SSL enabled: Waiting for certificates..."
+
+    CERT_FILE="/etc/letsencrypt/live/${CERT_WEB_DOMAIN_COMMON_NAME}/fullchain.pem"
+    KEY_FILE="/etc/letsencrypt/live/${CERT_WEB_DOMAIN_COMMON_NAME}/privkey.pem"
+    DH_FILE="/var/www/certbot/conf/ssl-dhparams.pem"
+    SSL_CONF="/var/www/certbot/conf/options-ssl-nginx.conf"
+    MAX_WAIT=1800
+    WAITED=0
+
+    while [ ! -f "${CERT_FILE}" ] || [ ! -f "${KEY_FILE}" ] || \
+          [ ! -f "${DH_FILE}" ] || [ ! -f "${SSL_CONF}" ]; do
+        if [ ${WAITED} -ge ${MAX_WAIT} ]; then
+            echo "ERROR: Timed out waiting for certificates after ${MAX_WAIT}s"
+            exit 1
+        fi
+        echo "Waiting for certificates... (${WAITED}s)"
+        sleep 5
+        WAITED=$((WAITED + 5))
+    done
+
+    echo "Certificates found. Configuring SSL..."
     cp /etc/nginx/conf-templates/default-ssl.conf.template /etc/nginx/templates/default.conf.template
 
     # Start certificate reload watcher in background
