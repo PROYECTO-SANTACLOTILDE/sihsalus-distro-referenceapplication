@@ -22,30 +22,44 @@
 
 ## Inicio Rápido
 
-### Sin SSL (Recomendado para desarrollo)
+### 1. Configurar variables de entorno
+
+Crear un archivo `.env` en la raíz del proyecto con las siguientes variables obligatorias:
+
+```env
+# Credenciales de GitHub Packages (obligatorio para construir el backend)
+GHP_USERNAME=<tu_usuario_github>
+GHP_PASSWORD=<tu_token_github_con_read:packages>
+
+# Token de OCL para importar conceptos médicos
+OMRS_OCL_TOKEN=<tu_token_de_ocl>
+```
+
+### 2. Construir e iniciar
+
+#### Sin SSL (desarrollo local)
 
 ```bash
-# Construir las imágenes
 docker compose build
-
-# Iniciar los servicios
 docker compose up -d
 
-# Acceder vía HTTP
 # http://localhost/openmrs/spa
 ```
 
-### Con SSL
+#### Con SSL (producción / red hospitalaria)
+
+Agregar las variables SSL al `.env`:
+
+```env
+CERT_WEB_DOMAIN_COMMON_NAME=192.168.10.5
+CERT_WEB_DOMAINS=192.168.10.5,localhost,127.0.0.1
+```
 
 ```bash
-# Construir las imágenes (incluye certbot)
 docker compose -f docker-compose.yml -f docker-compose.ssl.yml build
-
-# Iniciar los servicios con SSL
 docker compose -f docker-compose.yml -f docker-compose.ssl.yml up -d
 
-# Acceder vía HTTPS
-# https://localhost/openmrs/spa
+# https://192.168.10.5/openmrs/spa
 ```
 
 ## Configuración SSL/HTTPS
