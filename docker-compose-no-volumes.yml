@@ -8,7 +8,8 @@ services:
   backend:
     image: openmrs/openmrs-reference-application-3-backend:${TAG:-qa}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"

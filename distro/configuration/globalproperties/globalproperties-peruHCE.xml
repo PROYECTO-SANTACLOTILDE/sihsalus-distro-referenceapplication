@@ -142,6 +142,16 @@
             <value>a0b03050-c99b-11e0-9572-0800200c9a66</value>
         </globalProperty>
 
+        <!-- Dyaku / RENHICE Interoperability Configuration -->
+        <globalProperty>
+            <property>sihsalusinterop.renhice.endpoint</property>
+            <value>http://hapi-fhir:8080/fhir</value>
+            <description>
+                Endpoint URL del servidor FHIR de RENHICE (Dyaku).
+                Usa el nombre del servicio Docker 'hapi-fhir' para comunicación interna.
+            </description>
+        </globalProperty>
+
         <!-- OAuth2 SSO Configuration - descomentar si se quiere usar
         <globalProperty>
             <property>oauth2login.loginWithOAuth2</property>

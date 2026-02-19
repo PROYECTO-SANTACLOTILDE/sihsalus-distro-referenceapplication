@@ -10,7 +10,6 @@ services:
       - backend
     ports:
       - "80:80"
-      - "443:443"
     environment:
       FRAME_ANCESTORS: ${FRAME_ANCESTORS:-}
       FUA_CONFIG: ${FUA_CONFIG:-}
@@ -47,7 +46,8 @@ services:
     image: openmrs/openmrs-reference-application-3-backend:${TAG:-qa}
     restart: "unless-stopped"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
@@ -59,10 +59,10 @@ services:
       OMRS_OCL_TOKEN: ${OMRS_OCL_TOKEN}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/openmrs/health/started" ]
-      interval: 10s
-      timeout: 5s
-      retries: 48
-      start_period: 120s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1800s
     volumes:
       - openmrs-data:/openmrs/data
     build:
@@ -151,8 +151,11 @@ services:
     depends_on:
       - hapi-postgres
     networks:
-      - peruHCE-net
-  
+      default:
+        aliases:
+          - hapi-fhir-server
+      peruHCE-net:
+
   hapi-postgres:
     image: postgres:15
     container_name: peruHCE-hapi-postgres
@@ -164,6 +167,7 @@ services:
     volumes:
       - hapi_pgdata:/var/lib/postgresql/data
     networks:
+      - default
       - peruHCE-net
 volumes:
   openmrs-data: ~
