@@ -47,7 +47,8 @@ services:
     image: openmrs/openmrs-reference-application-3-backend:${TAG:-qa}
     restart: "unless-stopped"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
@@ -151,8 +152,11 @@ services:
     depends_on:
       - hapi-postgres
     networks:
-      - peruHCE-net
-  
+      default:
+        aliases:
+          - hapi-fhir-server
+      peruHCE-net:
+
   hapi-postgres:
     image: postgres:15
     container_name: peruHCE-hapi-postgres
@@ -164,6 +168,7 @@ services:
     volumes:
       - hapi_pgdata:/var/lib/postgresql/data
     networks:
+      - default
       - peruHCE-net
 volumes:
   openmrs-data: ~
