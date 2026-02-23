@@ -10,7 +10,7 @@
 services:
   grafana:
     container_name: peruHCE-grafana
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.3
     restart: "unless-stopped"
     ports:
       - "127.0.0.1:3001:3000"
@@ -20,6 +20,8 @@ services:
       GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
       GF_SERVER_ROOT_URL: http://localhost:3001
       GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_LOG_LEVEL: warn
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/logs-dashboard.json
     volumes:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -39,7 +41,7 @@ services:
 
   prometheus:
     container_name: peruHCE-prometheus
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.2.1
     restart: "unless-stopped"
     ports:
       - "127.0.0.1:9090:9090"
@@ -63,9 +65,19 @@ services:
       - monitoring-network
       - default
 
+  loki-init:
+    container_name: peruHCE-loki-init
+    image: alpine:3.23
+    user: "0"
+    command: chown -R 10001:10001 /loki
+    volumes:
+      - loki-data:/loki
+    networks:
+      - monitoring-network
+
   loki:
     container_name: peruHCE-loki
-    image: grafana/loki:latest
+    image: grafana/loki:3.6
     restart: "unless-stopped"
     ports:
       - "127.0.0.1:3100:3100"
@@ -73,6 +85,9 @@ services:
     volumes:
       - ./monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
       - loki-data:/loki
+    depends_on:
+      loki-init:
+        condition: service_completed_successfully
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://localhost:3100/ready" ]
       interval: 30s
@@ -84,7 +99,7 @@ services:
 
   alloy:
     container_name: peruHCE-alloy
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.13.1
     restart: "unless-stopped"
     ports:
       - "127.0.0.1:12345:12345"
